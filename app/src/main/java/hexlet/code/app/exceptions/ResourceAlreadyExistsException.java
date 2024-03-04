@@ -1,7 +1,7 @@
 package hexlet.code.app.exceptions;
 
-public class ResourceAlreadyExistsException extends RuntimeException{
-    public ResourceAlreadyExistsException (String message) {
+public class ResourceAlreadyExistsException extends RuntimeException {
+    public ResourceAlreadyExistsException(String message) {
         super(message);
     }
 }
