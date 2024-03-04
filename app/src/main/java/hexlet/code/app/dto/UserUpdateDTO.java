@@ -8,20 +8,19 @@ import lombok.Getter;
 import lombok.Setter;
 import org.openapitools.jackson.nullable.JsonNullable;
 
-@Setter
 @Getter
-public class UserCreateDTO {
+@Setter
+public class UserUpdateDTO {
+    @NotBlank
+    private JsonNullable<String> firstName;
 
     @NotBlank
-    private String firstName;
-
-    @NotBlank
-    private String lastName;
+    private JsonNullable<String> lastName;
 
     @Email
-    private String email;
+    private JsonNullable<String> email;
 
     @NotNull
     @Size(min = 3)
-    private String passwordDigest;
+    private JsonNullable<String> passwordDigest;
 }

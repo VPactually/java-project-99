@@ -2,7 +2,9 @@ package hexlet.code.app.services;
 
 import hexlet.code.app.dto.UserCreateDTO;
 import hexlet.code.app.dto.UserDTO;
+import hexlet.code.app.dto.UserUpdateDTO;
 import hexlet.code.app.exceptions.ResourceAlreadyExistsException;
+import hexlet.code.app.exceptions.ResourceNotFoundException;
 import hexlet.code.app.mappers.UserMapper;
 import hexlet.code.app.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,4 +45,20 @@ public class UserService {
         return mapper.map(user);
     }
 
+    public UserDTO findById(Long id) {
+        return mapper.map(repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found")));
+    }
+
+    public UserDTO update(UserUpdateDTO userUpdateDTO, Long id) {
+        var page = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
+        mapper.update(userUpdateDTO, page);
+        repository.save(page);
+        return mapper.map(page);
+    }
+
+    public void delete(Long id) {
+        repository.deleteById(id);
+    }
 }
