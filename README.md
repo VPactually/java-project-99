@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ### Hexlet tests, Build, Linter status, CodeCoverage status:
 
 [![Actions Status](https://github.com/VPactually/java-project-99/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/VPactually/java-project-99/actions)
