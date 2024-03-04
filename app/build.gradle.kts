@@ -1,11 +1,18 @@
 plugins {
     java
+    jacoco
+    id("checkstyle")
+    application
     id("org.springframework.boot") version "3.1.10-SNAPSHOT"
     id("io.spring.dependency-management") version "1.1.4"
 }
 
 group = "hexlet.code"
 version = "0.0.1-SNAPSHOT"
+
+application {
+    mainClass.set("hexlet.code.app.AppApplication")
+}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
@@ -14,6 +21,11 @@ java {
 configurations {
     compileOnly {
         extendsFrom(configurations.annotationProcessor.get())
+    }
+}
+
+tasks.jacocoTestReport {
+    reports { xml.required.set(true)
     }
 }
 
