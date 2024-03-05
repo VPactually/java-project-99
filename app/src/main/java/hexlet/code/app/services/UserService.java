@@ -51,11 +51,11 @@ public class UserService {
     }
 
     public UserDTO update(UserUpdateDTO userUpdateDTO, Long id) {
-        var page = repository.findById(id)
+        var user = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
-        mapper.update(userUpdateDTO, page);
-        repository.save(page);
-        return mapper.map(page);
+        mapper.update(userUpdateDTO, user);
+        repository.save(user);
+        return mapper.map(user);
     }
 
     public void delete(Long id) {

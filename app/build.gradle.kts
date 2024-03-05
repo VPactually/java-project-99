@@ -5,6 +5,8 @@ plugins {
     application
     id("org.springframework.boot") version "3.1.10-SNAPSHOT"
     id("io.spring.dependency-management") version "1.1.4"
+    id("io.freefair.lombok") version "8.4"
+
 }
 
 group = "hexlet.code"
@@ -56,6 +58,9 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
+    implementation("org.instancio:instancio-junit:3.3.1")
+    implementation("net.datafaker:datafaker:2.0.2")
+    testImplementation("net.javacrumbs.json-unit:json-unit-assertj:3.2.2")
 }
 
 tasks.withType<Test> {
