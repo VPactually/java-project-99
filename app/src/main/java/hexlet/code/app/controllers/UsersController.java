@@ -5,9 +5,11 @@ import hexlet.code.app.dto.UserDTO;
 import hexlet.code.app.dto.UserUpdateDTO;
 import hexlet.code.app.repositories.UserRepository;
 import hexlet.code.app.services.UserService;
+import hexlet.code.app.utils.UserUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +32,9 @@ public class UsersController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserUtils userUtils;
+
     @GetMapping
     public List<UserDTO> index() {
         return userService.getAll();
@@ -47,13 +52,13 @@ public class UsersController {
     }
 
     @PutMapping("/{id}")
-    public UserDTO update(@RequestBody UserUpdateDTO userUpdateDTO, @PathVariable Long id) {
+    public ResponseEntity<UserDTO> update(@RequestBody UserUpdateDTO userUpdateDTO, @PathVariable Long id) {
         return userService.update(userUpdateDTO, id);
     }
 
     @DeleteMapping("/{id}")
-    public void destroy(@PathVariable Long id) {
-        userService.delete(id);
+    public ResponseEntity<String> destroy(@PathVariable Long id) {
+        return userService.delete(id);
     }
 
 }

@@ -7,7 +7,10 @@ import hexlet.code.app.exceptions.ResourceAlreadyExistsException;
 import hexlet.code.app.exceptions.ResourceNotFoundException;
 import hexlet.code.app.mappers.UserMapper;
 import hexlet.code.app.repositories.UserRepository;
+import hexlet.code.app.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
@@ -21,6 +24,9 @@ public class UserService {
 
     @Autowired
     private UserMapper mapper;
+
+    @Autowired
+    private UserUtils userUtils;
 
     public List<UserDTO> getAll() {
         var users = repository.findAll();
@@ -50,15 +56,25 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found")));
     }
 
-    public UserDTO update(UserUpdateDTO userUpdateDTO, Long id) {
+    public ResponseEntity<UserDTO> update(UserUpdateDTO userUpdateDTO, Long id) {
         var user = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
-        mapper.update(userUpdateDTO, user);
-        repository.save(user);
-        return mapper.map(user);
+        if (userUtils.getCurrentUser().getId() == id) {
+            mapper.update(userUpdateDTO, user);
+            repository.save(user);
+            return ResponseEntity.status(HttpStatus.OK).body(mapper.map(user));
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+
+        }
     }
 
-    public void delete(Long id) {
-        repository.deleteById(id);
+    public ResponseEntity<String> delete(Long id) {
+        if (userUtils.getCurrentUser().getId() == id) {
+            repository.deleteById(id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("User has been deleted");
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have permission for it!");
+        }
     }
 }
