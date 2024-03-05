@@ -1,8 +1,6 @@
 package hexlet.code.app.component;
 
 import hexlet.code.app.dto.UserCreateDTO;
-import hexlet.code.app.model.User;
-import hexlet.code.app.services.CustomUserDetailsService;
 import hexlet.code.app.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;

@@ -21,7 +21,7 @@ public class AppApplication {
 
     @Bean
     public Faker faker() {
-        return new Faker(new Locale ("en", "US"));
+        return new Faker(new Locale("en", "US"));
     }
 
 }
