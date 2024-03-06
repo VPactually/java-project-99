@@ -1,11 +1,8 @@
 package hexlet.code.app.controllers;
 
-import hexlet.code.app.mappers.UserMapper;
 import hexlet.code.app.model.User;
 import hexlet.code.app.repositories.UserRepository;
-import hexlet.code.app.services.UserService;
 import hexlet.code.app.util.ModelGenerator;
-import hexlet.code.app.utils.JWTUtils;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,11 +15,9 @@ import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.test.web.servlet.MockMvc;
 
 
@@ -69,7 +64,7 @@ class UsersControllerTest {
     @Test
     public void testIndex() throws Exception {
         userRepository.save(testUser);
-        var result = mockMvc.perform(get("/users").with(jwt()))
+        var result = mockMvc.perform(get("/api/users").with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -82,7 +77,7 @@ class UsersControllerTest {
 
         userRepository.save(testUser);
 
-        var request = get("/users/{id}", testUser.getId()).with(jwt());
+        var request = get("/api/users/{id}", testUser.getId()).with(jwt());
         var result = mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andReturn();
@@ -99,7 +94,7 @@ class UsersControllerTest {
     @Test
     public void testCreate() throws Exception {
 
-        var request = post("/users")
+        var request = post("/api/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(testUser));
 
@@ -118,7 +113,7 @@ class UsersControllerTest {
     @Test
     public void testIndexWithoutAuth() throws Exception {
         userRepository.save(testUser);
-        mockMvc.perform(get("/users"))
+        mockMvc.perform(get("/api/users"))
                 .andExpect(status().isUnauthorized());
 
     }
@@ -128,7 +123,7 @@ class UsersControllerTest {
 
         userRepository.save(testUser);
 
-        var request = get("/users/{id}", testUser.getId());
+        var request = get("/api/users/{id}", testUser.getId());
         mockMvc.perform(request)
                 .andExpect(status().isUnauthorized());
 
@@ -142,7 +137,7 @@ class UsersControllerTest {
 
         var token = jwt().jwt(builder -> builder.subject(anotherUser.getEmail()));
 
-        var request = delete("/users/{id}", testUser.getId()).with(token);
+        var request = delete("/api/users/{id}", testUser.getId()).with(token);
 
         mockMvc.perform(request)
                 .andExpect(status().isForbidden());
@@ -159,7 +154,7 @@ class UsersControllerTest {
         update.put("firstName", "New First Name");
         update.put("lastName", "New Last Name");
 
-        var request = put("/users/{id}", testUser.getId()).with(token)
+        var request = put("/api/users/{id}", testUser.getId()).with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(update));
 
@@ -171,7 +166,7 @@ class UsersControllerTest {
     public void testDeleteUser() throws Exception {
         userRepository.save(testUser);
 
-        var delReq = delete("/users/" + testUser.getId())
+        var delReq = delete("/api/users/" + testUser.getId())
                 .with(jwt().jwt(builder -> builder.subject(testUser.getEmail())));
 
         mockMvc.perform(delReq)
@@ -188,7 +183,7 @@ class UsersControllerTest {
         update.put("firstName", "New First Name");
         update.put("lastName", "New Last Name");
 
-        var updateReq = put("/users/" + testUser.getId())
+        var updateReq = put("/api/users/" + testUser.getId())
                 .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(update));

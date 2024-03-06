@@ -1,29 +1,36 @@
 package hexlet.code.app.controllers;
 
-import hexlet.code.app.dto.UserCreateDTO;
-import hexlet.code.app.dto.UserDTO;
-import hexlet.code.app.dto.UserParamsDTO;
-import hexlet.code.app.dto.UserUpdateDTO;
+import hexlet.code.app.dto.users.UserCreateDTO;
+import hexlet.code.app.dto.users.UserDTO;
+import hexlet.code.app.dto.users.UserParamsDTO;
+import hexlet.code.app.dto.users.UserUpdateDTO;
 import hexlet.code.app.mappers.UserMapper;
-import hexlet.code.app.model.User;
 import hexlet.code.app.services.UserService;
 import hexlet.code.app.specifications.UserSpecification;
 import hexlet.code.app.utils.UserUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
 public class UsersController {
-
 
     @Autowired
     private UserService userService;
@@ -70,13 +77,17 @@ public class UsersController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> update(@RequestBody UserUpdateDTO userUpdateDTO, @PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("@userUtils.checkUserPermission(#id)")
+    public UserDTO update(@Valid @RequestBody UserUpdateDTO userUpdateDTO, @PathVariable Long id) {
         return userService.update(userUpdateDTO, id);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> destroy(@PathVariable Long id) {
-        return userService.delete(id);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("@userUtils.checkUserPermission(#id)")
+    public void destroy(@PathVariable Long id) {
+        userService.delete(id);
     }
 
 }

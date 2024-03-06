@@ -1,6 +1,6 @@
 package hexlet.code.app.specifications;
 
-import hexlet.code.app.dto.UserParamsDTO;
+import hexlet.code.app.dto.users.UserParamsDTO;
 import hexlet.code.app.model.User;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;

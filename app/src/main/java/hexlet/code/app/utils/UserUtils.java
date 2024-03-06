@@ -20,4 +20,15 @@ public class UserUtils {
         return userRepository.findByEmail(email).get();
     }
 
+
+    public boolean checkUserPermission(Long id) {
+        var userEmail = userRepository.findById(id).get().getEmail();
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        return userEmail.equals(authentication.getName());
+    }
+
+    public boolean checkUserPermission() {
+        return getCurrentUser() != null && getCurrentUser().isEnabled();
+    }
+
 }
