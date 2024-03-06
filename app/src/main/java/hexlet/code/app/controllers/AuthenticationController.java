@@ -9,11 +9,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping
 public class AuthenticationController {
     @Autowired
     private JWTUtils jwtUtils;
@@ -21,7 +20,7 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @PostMapping("/login")
+    @PostMapping("/api/login")
     public String create(@Valid @RequestBody AuthRequest authRequest) {
         var authentication = new UsernamePasswordAuthenticationToken(
                 authRequest.getUsername(), authRequest.getPassword());
@@ -31,8 +30,4 @@ public class AuthenticationController {
         return jwtUtils.generateToken(authRequest.getUsername());
     }
 
-    @GetMapping("/login")
-    public String get(@RequestBody AuthRequest authRequest) {
-        return authRequest.getUsername() + " " + authRequest.getPassword();
-    }
 }

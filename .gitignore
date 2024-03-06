@@ -37,3 +37,4 @@ out/
 .vscode/
 /.idea/
 /app/.idea
+/app/node_modules/

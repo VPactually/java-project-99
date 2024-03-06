@@ -3,7 +3,9 @@ package hexlet.code.app.controllers;
 import hexlet.code.app.mappers.UserMapper;
 import hexlet.code.app.model.User;
 import hexlet.code.app.repositories.UserRepository;
+import hexlet.code.app.services.UserService;
 import hexlet.code.app.util.ModelGenerator;
+import hexlet.code.app.utils.JWTUtils;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,9 +18,11 @@ import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.test.web.servlet.MockMvc;
 
 
@@ -48,9 +52,6 @@ class UsersControllerTest {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private UserMapper mapper;
 
     @Autowired
     private ModelGenerator modelGenerator;
@@ -187,12 +188,12 @@ class UsersControllerTest {
         update.put("firstName", "New First Name");
         update.put("lastName", "New Last Name");
 
-        var delReq = put("/users/" + testUser.getId())
+        var updateReq = put("/users/" + testUser.getId())
                 .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(update));
 
-        mockMvc.perform(delReq)
+        mockMvc.perform(updateReq)
                 .andExpect(status().isOk());
 
         var user = userRepository.findByEmail(testUser.getEmail()).get();
@@ -202,4 +203,5 @@ class UsersControllerTest {
         assertThat(user.getLastName()).isEqualTo("New Last Name");
         assertThat(user.getEmail()).isEqualTo(testUser.getEmail());
     }
+
 }

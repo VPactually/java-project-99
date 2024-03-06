@@ -22,5 +22,5 @@ public class UserCreateDTO {
 
     @NotNull
     @Size(min = 3)
-    private String passwordDigest;
+    private String password;
 }

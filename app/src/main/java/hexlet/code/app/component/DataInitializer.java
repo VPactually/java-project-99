@@ -18,9 +18,18 @@ public class DataInitializer implements ApplicationRunner {
         var email = "hexlet@example.com";
         var userData = new UserCreateDTO();
         userData.setEmail(email);
-        userData.setPasswordDigest("qwerty");
+        userData.setPassword("qwerty");
         userData.setFirstName("Admin");
         userData.setLastName("adminov");
         userService.create(userData);
+
+        for (int i = 1; i <= 6; i++) {
+            var user = new UserCreateDTO();
+            user.setEmail("vpactually" + i + "@gmail.com");
+            user.setPassword("123123");
+            user.setFirstName("Vladislav");
+            user.setLastName("Pomozov");
+            userService.create(user);
+        }
     }
 }

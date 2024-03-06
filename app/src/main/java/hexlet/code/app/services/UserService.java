@@ -6,12 +6,20 @@ import hexlet.code.app.dto.UserUpdateDTO;
 import hexlet.code.app.exceptions.ResourceAlreadyExistsException;
 import hexlet.code.app.exceptions.ResourceNotFoundException;
 import hexlet.code.app.mappers.UserMapper;
+import hexlet.code.app.model.User;
 import hexlet.code.app.repositories.UserRepository;
+import hexlet.code.app.specifications.UserSpecification;
 import hexlet.code.app.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 import java.util.List;
@@ -28,12 +36,16 @@ public class UserService {
     @Autowired
     private UserUtils userUtils;
 
-    public List<UserDTO> getAll() {
-        var users = repository.findAll();
-        return users.stream()
-                .map(mapper::map)
-                .toList();
+
+    public Page<User> getAll(Specification<User> spec, PageRequest pageRequest) {
+        return repository.findAll(spec, pageRequest);
+
     }
+
+    public List<UserDTO> getAll() {
+        return repository.findAll().stream().map(mapper::map).toList();
+    }
+
 //    public List<UserDTO> getAll(PageParamsDTO params, @RequestParam(defaultValue = "1") int page) {
 //        var spec = specBuilder.build(params);
 //        return repository.findAll(spec, PageRequest.of(page - 1, 10))
@@ -59,7 +71,7 @@ public class UserService {
     public ResponseEntity<UserDTO> update(UserUpdateDTO userUpdateDTO, Long id) {
         var user = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
-        if (userUtils.getCurrentUser().getId() == id) {
+        if (checkUserPermission(id)) {
             mapper.update(userUpdateDTO, user);
             repository.save(user);
             return ResponseEntity.status(HttpStatus.OK).body(mapper.map(user));
@@ -70,11 +82,16 @@ public class UserService {
     }
 
     public ResponseEntity<String> delete(Long id) {
-        if (userUtils.getCurrentUser().getId() == id) {
+        if (checkUserPermission(id)) {
             repository.deleteById(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("User has been deleted");
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have permission for it!");
         }
+    }
+
+    public boolean checkUserPermission(Long id) {
+        var currentUser = userUtils.getCurrentUser();
+        return currentUser.getId() == id;
     }
 }
