@@ -8,7 +8,6 @@ import hexlet.code.app.exceptions.ResourceNotFoundException;
 import hexlet.code.app.mappers.UserMapper;
 import hexlet.code.app.model.User;
 import hexlet.code.app.repositories.UserRepository;
-import hexlet.code.app.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,9 +25,6 @@ public class UserService {
 
     @Autowired
     private UserMapper mapper;
-
-    @Autowired
-    private UserUtils userUtils;
 
 
     public Page<User> getAll(Specification<User> spec, PageRequest pageRequest) {

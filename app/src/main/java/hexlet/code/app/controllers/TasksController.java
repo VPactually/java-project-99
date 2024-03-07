@@ -1,10 +1,10 @@
 package hexlet.code.app.controllers;
 
-import hexlet.code.app.dto.taskStatuses.TaskStatusCreateDTO;
-import hexlet.code.app.dto.taskStatuses.TaskStatusDTO;
-import hexlet.code.app.dto.taskStatuses.TaskStatusUpdateDTO;
-import hexlet.code.app.services.TaskStatusService;
-import hexlet.code.app.utils.UserUtils;
+import hexlet.code.app.dto.tasks.TaskCreateDTO;
+import hexlet.code.app.dto.tasks.TaskDTO;
+import hexlet.code.app.dto.tasks.TaskUpdateDTO;
+import hexlet.code.app.services.TaskService;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -25,52 +25,49 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/task_statuses")
-public class TaskStatusesController {
+@RequestMapping("/api/tasks")
+public class TasksController {
 
     @Autowired
-    private TaskStatusService taskStatusService;
-
-    @Autowired
-    private UserUtils userUtils;
+    private TaskService taskService;
 
     @GetMapping
-    public ResponseEntity<List<TaskStatusDTO>> index(
+    public ResponseEntity<List<TaskDTO>> index(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer pageSize) {
         var pageable = PageRequest.of(page - 1, pageSize);
-        var result = taskStatusService.getAll(pageable);
+        var result = taskService.getAll(pageable);
         return ResponseEntity.ok()
-                .header("X-Total-Count", String.valueOf(taskStatusService.getAll().size()))
+                .header("X-Total-Count", String.valueOf(taskService.getAll().size()))
                 .body(result);
     }
 
     @GetMapping("/{id}")
-    public TaskStatusDTO show(@PathVariable Long id) {
-        return taskStatusService.findById(id);
+    public TaskDTO show(@PathVariable Long id) {
+        return taskService.findById(id);
     }
 
     @PostMapping
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.CREATED)
-    public TaskStatusDTO create(@Valid @RequestBody TaskStatusCreateDTO taskStatusCreateDTO) {
-        return taskStatusService.create(taskStatusCreateDTO);
+    public TaskDTO create(@Valid @RequestBody TaskCreateDTO taskCreateDTO) {
+        return taskService.create(taskCreateDTO);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("isAuthenticated()")
-    public TaskStatusDTO update(
-            @Valid @RequestBody TaskStatusUpdateDTO taskStatusUpdateDTO,
+    public TaskDTO update(
+            @Valid @RequestBody TaskUpdateDTO taskStatusUpdateDTO,
             @PathVariable Long id
     ) {
-        return taskStatusService.update(taskStatusUpdateDTO, id);
+        return taskService.update(taskStatusUpdateDTO, id);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("isAuthenticated()")
     public void destroy(@PathVariable Long id) {
-        taskStatusService.delete(id);
+        taskService.delete(id);
     }
 }
