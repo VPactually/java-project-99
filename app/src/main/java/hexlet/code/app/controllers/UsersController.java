@@ -35,6 +35,7 @@ public class UsersController {
     @Autowired
     private UserService userService;
 
+
     @Autowired
     private UserMapper userMapper;
 
@@ -47,22 +48,17 @@ public class UsersController {
     @GetMapping
     public ResponseEntity<List<UserDTO>> index(
             UserParamsDTO userParamsDTO,
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "5") Integer pageSize,
-            @RequestParam(defaultValue = "id") String sort,
-            @RequestParam(defaultValue = "ASC") String order
-    ) {
+            @RequestParam(name = "_start", defaultValue = "0") int start,
+            @RequestParam(name = "_end", defaultValue = "5") int end,
+            @RequestParam(name = "_sort", defaultValue = "id") String sort,
+            @RequestParam(name = "_order", defaultValue = "ASC") String order) {
         var spec = specBuilder.build(userParamsDTO);
-        var direction = order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        var pageable = PageRequest.of(page - 1, pageSize, Sort.by(direction, sort));
-        var resultPage = userService.getAll(spec, pageable);
-        var result = resultPage.getContent()
-                .stream()
-                .map(userMapper::map)
-                .toList();
+        var direction = "ASC".equals(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
+        var pageable = PageRequest.of(start, end, Sort.by(direction, sort));
+        var result = userService.getAll(spec, pageable).map(userMapper::map);
         return ResponseEntity.ok()
-                .header("X-Total-Count", String.valueOf(resultPage.getTotalElements()))
-                .body(result);
+                .header("X-Total-Count", String.valueOf(result.getTotalElements()))
+                .body(result.toList());
     }
 
     @GetMapping("/{id}")
