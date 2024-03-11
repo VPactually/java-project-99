@@ -61,6 +61,11 @@ dependencies {
     implementation("org.instancio:instancio-junit:3.3.1")
     implementation("net.datafaker:datafaker:2.0.2")
     testImplementation("net.javacrumbs.json-unit:json-unit-assertj:3.2.2")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.2.0")
+    testImplementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.2.0")
+
+
 }
 
 tasks.withType<Test> {
