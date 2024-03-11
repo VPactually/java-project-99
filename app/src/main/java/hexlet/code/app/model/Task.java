@@ -48,7 +48,7 @@ public class Task implements BaseEntity {
     private TaskStatus taskStatus;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private User assignee;
 
     @CreatedDate

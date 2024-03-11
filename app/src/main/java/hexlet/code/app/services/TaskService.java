@@ -8,10 +8,12 @@ import hexlet.code.app.exceptions.ResourceAlreadyExistsException;
 import hexlet.code.app.exceptions.ResourceNotFoundException;
 import hexlet.code.app.mappers.TaskMapper;
 
+import hexlet.code.app.model.Task;
 import hexlet.code.app.repositories.TaskRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,8 +27,8 @@ public class TaskService {
     @Autowired
     private TaskMapper mapper;
 
-    public List<TaskDTO> getAll(PageRequest pageRequest) {
-        return repository.findAll(pageRequest).map(mapper::map).toList();
+    public List<TaskDTO> getAll(Specification<Task> spec, PageRequest pageRequest) {
+        return repository.findAll(spec, pageRequest).map(mapper::map).toList();
     }
 
     public List<TaskDTO> getAll() {

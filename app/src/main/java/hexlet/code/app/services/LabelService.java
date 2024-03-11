@@ -37,7 +37,7 @@ public class LabelService {
 
     public LabelDTO findById(Long id) {
         return mapper.map(repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found")));
+                .orElseThrow(() -> new ResourceNotFoundException("Label with id " + id + " not found")));
     }
 
     public LabelDTO update(LabelUpdateDTO labelUpdateDTO, Long id) {

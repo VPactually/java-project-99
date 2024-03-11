@@ -41,7 +41,7 @@ public class TaskStatus implements BaseEntity {
     @Column(unique = true)
     private String slug;
 
-    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private List<Task> tasks = new ArrayList<>();
 
     @CreatedDate

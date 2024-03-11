@@ -2,9 +2,11 @@ package hexlet.code.app.controllers;
 
 import hexlet.code.app.dto.tasks.TaskCreateDTO;
 import hexlet.code.app.dto.tasks.TaskDTO;
+import hexlet.code.app.dto.tasks.TaskParamsDTO;
 import hexlet.code.app.dto.tasks.TaskUpdateDTO;
 import hexlet.code.app.services.TaskService;
 
+import hexlet.code.app.specifications.TaskSpecification;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -31,12 +33,17 @@ public class TasksController {
     @Autowired
     private TaskService taskService;
 
+    @Autowired
+    private TaskSpecification specification;
+
     @GetMapping
     public ResponseEntity<List<TaskDTO>> index(
+            TaskParamsDTO taskParamsDTO,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer pageSize) {
+        var spec = specification.build(taskParamsDTO);
         var pageable = PageRequest.of(page - 1, pageSize);
-        var result = taskService.getAll(pageable);
+        var result = taskService.getAll(spec, pageable);
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(taskService.getAll().size()))
                 .body(result);
