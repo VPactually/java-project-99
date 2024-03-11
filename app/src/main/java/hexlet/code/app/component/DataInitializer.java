@@ -1,12 +1,15 @@
 package hexlet.code.app.component;
 
+import hexlet.code.app.dto.labels.LabelCreateDTO;
 import hexlet.code.app.dto.taskStatuses.TaskStatusCreateDTO;
 import hexlet.code.app.dto.users.UserCreateDTO;
+import hexlet.code.app.services.LabelService;
 import hexlet.code.app.services.TaskStatusService;
 import hexlet.code.app.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Role;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,6 +20,9 @@ public class DataInitializer implements ApplicationRunner {
 
     @Autowired
     private TaskStatusService taskStatusService;
+
+    @Autowired
+    private LabelService labelService;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -37,5 +43,8 @@ public class DataInitializer implements ApplicationRunner {
         taskStatusService.create(new TaskStatusCreateDTO("ToBeFixed", "to_be_fixed"));
         taskStatusService.create(new TaskStatusCreateDTO("ToPublish", "to_publish"));
         taskStatusService.create(new TaskStatusCreateDTO("Published", "published"));
+
+        labelService.create(new LabelCreateDTO("feature"));
+        labelService.create(new LabelCreateDTO("bug"));
     }
 }

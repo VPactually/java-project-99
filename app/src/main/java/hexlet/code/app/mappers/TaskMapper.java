@@ -8,14 +8,7 @@ import hexlet.code.app.model.Task;
 
 import hexlet.code.app.model.TaskStatus;
 import hexlet.code.app.repositories.TaskStatusRepository;
-import org.mapstruct.MappingConstants;
-import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.mapstruct.ReportingPolicy;
-import org.mapstruct.InheritConfiguration;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -42,7 +35,10 @@ public abstract class TaskMapper {
     @Mapping(target = "status", source = "taskStatus.slug")
     public abstract TaskDTO map(Task model);
 
-    @InheritConfiguration
+    @Mapping(source = "assignee_id", target = "assignee.id")
+    @Mapping(source = "title", target = "name")
+    @Mapping(source = "content", target = "description")
+    @Mapping(source = "status", target = "taskStatus", qualifiedByName = "slugToTaskStatus")
     public abstract void update(TaskUpdateDTO dto, @MappingTarget Task model);
 
     @Named("slugToTaskStatus")

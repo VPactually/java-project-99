@@ -26,10 +26,6 @@ public class TaskService {
     @Autowired
     private TaskMapper mapper;
 
-    @Autowired
-    private UserUtils userUtils;
-
-
     public List<TaskDTO> getAll(PageRequest pageRequest) {
         return repository.findAll(pageRequest).map(mapper::map).toList();
     }
@@ -55,11 +51,11 @@ public class TaskService {
     }
 
     public TaskDTO update(TaskUpdateDTO taskUpdateDTO, Long id) {
-        var taskStatus = repository.findById(id)
+        var task = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
-        mapper.update(taskUpdateDTO, taskStatus);
-        repository.save(taskStatus);
-        return mapper.map(taskStatus);
+        mapper.update(taskUpdateDTO, task);
+        repository.save(task);
+        return mapper.map(task);
 
     }
 

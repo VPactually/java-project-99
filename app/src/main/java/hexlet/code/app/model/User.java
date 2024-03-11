@@ -64,7 +64,7 @@ public class User implements BaseEntity, UserDetails {
     @LastModifiedDate
     private LocalDate updatedAt;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY)
     private List<Task> tasks = new ArrayList<>();
 
     @Override
