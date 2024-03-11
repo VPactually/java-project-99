@@ -27,8 +27,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -94,7 +96,6 @@ public class LabelsControllerTest {
                 .andReturn().getResponse().getContentAsString();
         assertThatJson(response).isArray();
 
-        testLabel.setTasks(null);
         labelRepository.save(testLabel);
 
         var response2 = mockMvc.perform(get("/api/labels")
@@ -113,7 +114,6 @@ public class LabelsControllerTest {
     @Test
     public void showTest() throws Exception {
 
-        testLabel.setTasks(null);
         labelRepository.save(testLabel);
 
         var response = mockMvc.perform(get("/api/labels/" + testLabel.getId())
@@ -152,7 +152,6 @@ public class LabelsControllerTest {
 
     @Test
     public void updateTest() throws Exception {
-        testLabel.setTasks(null);
         labelRepository.save(testLabel);
 
         var dto = new HashMap<>();
@@ -178,7 +177,6 @@ public class LabelsControllerTest {
 
     @Test
     public void deleteTest() throws Exception {
-        testLabel.setTasks(null);
         labelRepository.save(testLabel);
 
         mockMvc.perform(delete("/api/labels/" + testLabel.getId()))

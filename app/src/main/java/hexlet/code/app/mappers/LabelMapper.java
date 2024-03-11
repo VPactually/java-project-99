@@ -4,7 +4,6 @@ import hexlet.code.app.dto.labels.LabelCreateDTO;
 import hexlet.code.app.dto.labels.LabelDTO;
 import hexlet.code.app.dto.labels.LabelUpdateDTO;
 import hexlet.code.app.model.Label;
-import hexlet.code.app.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.MappingConstants;

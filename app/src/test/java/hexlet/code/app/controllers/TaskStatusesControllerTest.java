@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Map;
 
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -94,20 +95,19 @@ public class TaskStatusesControllerTest {
 
     @Test
     public void createTest() throws Exception {
-        var data = Map.of("name", "Absolute Name", "slug", "absolute_slug");
-        mockMvc.perform(post("/api/task_statuses")
+        var data = Map.of("name", "Name for Create", "slug", "slug_for_create");
+
+        var response = mockMvc.perform(post("/api/task_statuses")
                         .with(token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(data)))
                 .andExpect(status().isCreated())
-                .andReturn().getResponse();
-        var response = mockMvc.perform(get("/api/task_statuses")
-                        .with(token))
-                .andExpect(status().isOk())
-                .andReturn().getResponse();
+                .andReturn().getResponse().getContentAsString();
 
-        assertThat(response.getContentAsString()).contains("Absolute Name");
-        assertThat(response.getContentAsString()).contains("absolute_slug");
+        assertThatJson(response).and(
+                v -> v.node("name").isEqualTo("Name for Create"),
+                v -> v.node("slug").isEqualTo("slug_for_create")
+        );
     }
 
     @Test

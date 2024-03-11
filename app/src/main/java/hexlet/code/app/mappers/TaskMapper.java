@@ -8,7 +8,13 @@ import hexlet.code.app.model.Task;
 
 import hexlet.code.app.model.TaskStatus;
 import hexlet.code.app.repositories.TaskStatusRepository;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 

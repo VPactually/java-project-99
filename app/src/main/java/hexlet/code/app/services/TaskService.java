@@ -10,7 +10,6 @@ import hexlet.code.app.mappers.TaskMapper;
 
 import hexlet.code.app.repositories.TaskRepository;
 
-import hexlet.code.app.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
