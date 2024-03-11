@@ -37,7 +37,7 @@ import java.util.HashMap;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class UsersControllerTest {
+public class UsersControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
