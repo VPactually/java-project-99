@@ -40,7 +40,7 @@ public class TasksController {
     public ResponseEntity<List<TaskDTO>> index(
             TaskParamsDTO taskParamsDTO,
             @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
+            @RequestParam(defaultValue = "1000") Integer pageSize) {
         var spec = specification.build(taskParamsDTO);
         var pageable = PageRequest.of(page - 1, pageSize);
         var result = taskService.getAll(spec, pageable);

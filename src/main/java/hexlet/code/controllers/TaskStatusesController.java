@@ -37,7 +37,7 @@ public class TaskStatusesController {
     @GetMapping
     public ResponseEntity<List<TaskStatusDTO>> index(
             @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
+            @RequestParam(defaultValue = "1000") Integer pageSize) {
         var pageable = PageRequest.of(page - 1, pageSize);
         var result = taskStatusService.getAll(pageable);
         return ResponseEntity.ok()
