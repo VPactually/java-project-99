@@ -10,7 +10,7 @@ plugins {
 
 }
 
-group = "hexlet.code"
+group = "hexlet.code.app"
 version = "0.0.1-SNAPSHOT"
 
 application {
