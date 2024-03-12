@@ -49,7 +49,7 @@ public class UsersController {
     public ResponseEntity<List<UserDTO>> index(
             UserParamsDTO userParamsDTO,
             @RequestParam(name = "_start", defaultValue = "0") int start,
-            @RequestParam(name = "_end", defaultValue = "5") int end,
+            @RequestParam(name = "_end", defaultValue = "1000") int end,
             @RequestParam(name = "_sort", defaultValue = "id") String sort,
             @RequestParam(name = "_order", defaultValue = "ASC") String order) {
         var spec = specBuilder.build(userParamsDTO);

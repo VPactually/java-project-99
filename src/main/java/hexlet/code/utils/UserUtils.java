@@ -27,8 +27,4 @@ public class UserUtils {
         return userEmail.equals(authentication.getName());
     }
 
-    public boolean checkUserPermission() {
-        return getCurrentUser() != null && getCurrentUser().isEnabled();
-    }
-
 }
