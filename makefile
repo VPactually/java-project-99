@@ -1,7 +1,7 @@
 build:
-	cd app/ && ./gradlew build
+	./gradlew build
 
 report:
-	cd app/ && ./gradlew jacocoTestReport
+	./gradlew jacocoTestReport
 
 .PHONY: build
