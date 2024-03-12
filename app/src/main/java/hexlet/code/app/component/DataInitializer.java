@@ -2,14 +2,20 @@ package hexlet.code.app.component;
 
 import hexlet.code.app.dto.labels.LabelCreateDTO;
 import hexlet.code.app.dto.taskStatuses.TaskStatusCreateDTO;
+import hexlet.code.app.dto.tasks.TaskCreateDTO;
 import hexlet.code.app.dto.users.UserCreateDTO;
+import hexlet.code.app.model.Label;
+import hexlet.code.app.repositories.LabelRepository;
 import hexlet.code.app.services.LabelService;
+import hexlet.code.app.services.TaskService;
 import hexlet.code.app.services.TaskStatusService;
 import hexlet.code.app.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class DataInitializer implements ApplicationRunner {
@@ -26,16 +32,11 @@ public class DataInitializer implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
-        userService.create(new UserCreateDTO("Admin", "Admin", "hexlet@example.com", "qwerty"));
+        var admin = new UserCreateDTO("Admin", "Admin", "hexlet@example.com", "qwerty");
+        userService.create(admin);
 
-        for (int i = 1; i <= 5; i++) {
-            var user = new UserCreateDTO();
-            user.setEmail("vpactually" + i + "@gmail.com");
-            user.setPassword("123123");
-            user.setFirstName("Vladislav");
-            user.setLastName("Pomozov");
-            userService.create(user);
-        }
+        var user = new UserCreateDTO("user", "user", "user@gmail.com", "password");
+        userService.create(user);
 
         taskStatusService.create(new TaskStatusCreateDTO("Draft", "draft"));
         taskStatusService.create(new TaskStatusCreateDTO("ToReview", "to_review"));
@@ -43,7 +44,8 @@ public class DataInitializer implements ApplicationRunner {
         taskStatusService.create(new TaskStatusCreateDTO("ToPublish", "to_publish"));
         taskStatusService.create(new TaskStatusCreateDTO("Published", "published"));
 
-        labelService.create(new LabelCreateDTO("feature"));
         labelService.create(new LabelCreateDTO("bug"));
+        labelService.create(new LabelCreateDTO("feature"));
+
     }
 }

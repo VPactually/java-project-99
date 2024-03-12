@@ -4,9 +4,11 @@ import hexlet.code.app.dto.tasks.TaskCreateDTO;
 import hexlet.code.app.dto.tasks.TaskDTO;
 import hexlet.code.app.dto.tasks.TaskUpdateDTO;
 import hexlet.code.app.exceptions.ResourceNotFoundException;
+import hexlet.code.app.model.Label;
 import hexlet.code.app.model.Task;
 
 import hexlet.code.app.model.TaskStatus;
+import hexlet.code.app.repositories.LabelRepository;
 import hexlet.code.app.repositories.TaskStatusRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -16,6 +18,9 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Mapper(
@@ -29,10 +34,14 @@ public abstract class TaskMapper {
     @Autowired
     private TaskStatusRepository taskStatusRepository;
 
+    @Autowired
+    private LabelRepository labelRepository;
+
     @Mapping(source = "assignee_id", target = "assignee.id")
     @Mapping(source = "title", target = "name")
     @Mapping(source = "content", target = "description")
     @Mapping(source = "status", target = "taskStatus", qualifiedByName = "slugToTaskStatus")
+    @Mapping(source = "taskLabelIds", target = "labels", qualifiedByName = "labelIdsToLabels")
     public abstract Task map(TaskCreateDTO dto);
 
     @Mapping(target = "assignee_id", source = "assignee.id")
@@ -45,11 +54,18 @@ public abstract class TaskMapper {
     @Mapping(source = "title", target = "name")
     @Mapping(source = "content", target = "description")
     @Mapping(source = "status", target = "taskStatus", qualifiedByName = "slugToTaskStatus")
+    @Mapping(source = "taskLabelIds", target = "labels", qualifiedByName = "labelIdsToLabels")
     public abstract void update(TaskUpdateDTO dto, @MappingTarget Task model);
 
     @Named("slugToTaskStatus")
     public TaskStatus slugToTaskStatus(String slug) {
         return taskStatusRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResourceNotFoundException("Task Status with slug = " + slug + " not found"));
+    }
+
+    @Named("labelIdsToLabels")
+    public Set<Label> labelIdToLabel(Set<Long> labelsIds) {
+        return labelsIds == null ? new HashSet<>() : new HashSet<>(labelRepository.findAllById(labelsIds));
+
     }
 }

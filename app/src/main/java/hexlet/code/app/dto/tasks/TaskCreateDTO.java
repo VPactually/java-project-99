@@ -6,14 +6,20 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class TaskCreateDTO {
 
     private Integer index;
@@ -30,6 +36,5 @@ public class TaskCreateDTO {
     @NotNull
     private String status;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    private List<Label> labels = new ArrayList<>();
+    private Set<Long> taskLabelIds;
 }

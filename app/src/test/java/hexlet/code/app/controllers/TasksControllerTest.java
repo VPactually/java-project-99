@@ -5,20 +5,25 @@ import hexlet.code.app.dto.tasks.TaskCreateDTO;
 import hexlet.code.app.model.Task;
 import hexlet.code.app.model.TaskStatus;
 import hexlet.code.app.model.User;
+import hexlet.code.app.repositories.LabelRepository;
 import hexlet.code.app.repositories.TaskRepository;
 import hexlet.code.app.repositories.TaskStatusRepository;
 import hexlet.code.app.repositories.UserRepository;
 import hexlet.code.app.util.ModelGenerator;
 import org.instancio.Instancio;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,6 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DirtiesContext
 public class TasksControllerTest {
 
     @Autowired
@@ -41,6 +47,9 @@ public class TasksControllerTest {
 
     @Autowired
     private ObjectMapper om;
+
+    @Autowired
+    private LabelRepository labelRepository;
 
     @Autowired
     private TaskRepository taskRepository;
@@ -66,7 +75,6 @@ public class TasksControllerTest {
         testTaskStatus = Instancio.of(modelGenerator.getTaskStatusModel()).create();
         testUser = Instancio.of(modelGenerator.getUserModel()).create();
         token = jwt().jwt(builder -> builder.subject("hexlet@example.com"));
-
 
         taskStatusRepository.save(testTaskStatus);
         userRepository.save(testUser);
@@ -97,7 +105,6 @@ public class TasksControllerTest {
                 .contains(testTask.getDescription())
                 .contains(testTask.getTaskStatus().getSlug());
     }
-
 
     @Test
     public void showTest() throws Exception {
@@ -147,7 +154,6 @@ public class TasksControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 
-
     @Test
     public void updateTest() throws Exception {
         taskRepository.save(testTask);
@@ -176,7 +182,6 @@ public class TasksControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 
-
     @Test
     public void deleteTest() throws Exception {
         taskRepository.save(testTask);
@@ -191,4 +196,5 @@ public class TasksControllerTest {
                 .andReturn().getResponse();
         assertFalse(taskRepository.findByName(testTask.getName()).isPresent());
     }
+
 }

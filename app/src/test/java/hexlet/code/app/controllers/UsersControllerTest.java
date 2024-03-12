@@ -4,6 +4,7 @@ import hexlet.code.app.model.User;
 import hexlet.code.app.repositories.UserRepository;
 import hexlet.code.app.util.ModelGenerator;
 import org.instancio.Instancio;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -18,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 
@@ -37,6 +39,7 @@ import java.util.HashMap;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DirtiesContext
 public class UsersControllerTest {
 
     @Autowired
