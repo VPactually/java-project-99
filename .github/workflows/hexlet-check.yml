@@ -20,5 +20,7 @@ jobs:
 
       - name: Hexlet project check
         uses: hexlet/project-action@release
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         with:
           hexlet-id: ${{ secrets.HEXLET_ID }}
