@@ -46,6 +46,10 @@ sentry {
     authToken = System.getenv("SENTRY_AUTH_TOKEN")
 }
 
+tasks.sentryBundleSourcesJava {
+    enabled = System.getenv("SENTRY_AUTH_TOKEN") != null
+}
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
