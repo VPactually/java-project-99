@@ -6,7 +6,6 @@ import hexlet.code.app.model.User;
 import hexlet.code.app.repositories.TaskStatusRepository;
 import hexlet.code.app.util.ModelGenerator;
 import org.instancio.Instancio;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;

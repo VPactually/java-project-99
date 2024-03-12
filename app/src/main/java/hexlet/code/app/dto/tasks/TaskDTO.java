@@ -1,11 +1,9 @@
 package hexlet.code.app.dto.tasks;
 
 
-import hexlet.code.app.model.Label;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
 
 @Getter
 @Setter

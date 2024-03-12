@@ -4,7 +4,6 @@ import hexlet.code.app.model.User;
 import hexlet.code.app.repositories.UserRepository;
 import hexlet.code.app.util.ModelGenerator;
 import org.instancio.Instancio;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 

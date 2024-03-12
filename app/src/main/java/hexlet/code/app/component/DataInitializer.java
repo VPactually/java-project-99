@@ -2,20 +2,14 @@ package hexlet.code.app.component;
 
 import hexlet.code.app.dto.labels.LabelCreateDTO;
 import hexlet.code.app.dto.taskStatuses.TaskStatusCreateDTO;
-import hexlet.code.app.dto.tasks.TaskCreateDTO;
 import hexlet.code.app.dto.users.UserCreateDTO;
-import hexlet.code.app.model.Label;
-import hexlet.code.app.repositories.LabelRepository;
 import hexlet.code.app.services.LabelService;
-import hexlet.code.app.services.TaskService;
 import hexlet.code.app.services.TaskStatusService;
 import hexlet.code.app.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class DataInitializer implements ApplicationRunner {
