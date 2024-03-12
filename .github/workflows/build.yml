@@ -14,6 +14,8 @@ jobs:
         with:
           gradle-version: 8.6
       - name: Make build
+        env: 
+          SENTRY_AUTH_TOKEN: ${{secrets. SENTRY_AUTH_TOKEN}}
         run: make build
       - name: Publish code coverage
         uses: paambaati/codeclimate-action@v5.0.0
