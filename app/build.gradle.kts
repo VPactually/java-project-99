@@ -2,6 +2,7 @@ plugins {
     java
     jacoco
     id("checkstyle")
+    id("io.sentry.jvm.gradle") version "4.3.1"
     application
     id("org.springframework.boot") version "3.1.10-SNAPSHOT"
     id("io.spring.dependency-management") version "1.1.4"
@@ -35,6 +36,14 @@ repositories {
     mavenCentral()
     maven { url = uri("https://repo.spring.io/milestone") }
     maven { url = uri("https://repo.spring.io/snapshot") }
+}
+
+sentry {
+    includeSourceContext = true
+
+    org = "vladislav-id"
+    projectName = "java"
+    authToken = System.getenv("SENTRY_AUTH_TOKEN")
 }
 
 dependencies {

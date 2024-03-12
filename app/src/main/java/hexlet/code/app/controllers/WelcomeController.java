@@ -13,4 +13,9 @@ public class WelcomeController {
         return "Welcome to Spring";
     }
 
+    @GetMapping("exception")
+    public String trigger() {
+        throw new RuntimeException("Exception was triggered");
+    }
+
 }
