@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -38,7 +39,7 @@ import java.util.HashMap;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@DirtiesContext
+@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 public class UsersControllerTest {
 
     @Autowired

@@ -1,6 +1,7 @@
 package hexlet.code.dto.tasks;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +12,8 @@ public class TaskDTO {
 
     private Long id;
 
-    private Long assignee_id;
+    @JsonProperty("assignee_id")
+    private Long assigneeId;
 
     private Integer index;
 

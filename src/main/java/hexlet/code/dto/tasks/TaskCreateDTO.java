@@ -17,8 +17,7 @@ public class TaskCreateDTO {
 
     private Integer index;
 
-    @NotNull
-    private Long assignee_id;
+    private Long assigneeId;
 
     @NotBlank
     private String title;

@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -36,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@DirtiesContext
+@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 public class TasksControllerTest {
 
     @Autowired
@@ -129,7 +130,7 @@ public class TasksControllerTest {
         dto.setTitle(testTask.getName());
         dto.setContent(testTask.getDescription());
         dto.setIndex(testTask.getIndex());
-        dto.setAssignee_id(testTask.getAssignee().getId());
+        dto.setAssigneeId(testTask.getAssignee().getId());
         dto.setStatus(testTask.getTaskStatus().getSlug());
 
         var response = mockMvc.perform(post("/api/tasks")
@@ -149,6 +150,20 @@ public class TasksControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(dto)))
                 .andExpect(status().isUnauthorized());
+
+        var dto2 = new TaskCreateDTO();
+        dto2.setTitle(testTask.getName() + "new");
+        dto2.setContent(testTask.getDescription() + "new");
+        dto2.setIndex(testTask.getIndex() + testTask.getIndex());
+        dto2.setStatus(testTask.getTaskStatus().getSlug());
+        dto2.setAssigneeId(null);
+
+        var response2 = mockMvc.perform(post("/api/tasks")
+                        .with(token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsString(dto2)))
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
     }
 
     @Test
