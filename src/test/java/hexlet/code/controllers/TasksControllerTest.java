@@ -157,6 +157,8 @@ public class TasksControllerTest {
         dto2.setIndex(testTask.getIndex() + testTask.getIndex());
         dto2.setStatus(testTask.getTaskStatus().getSlug());
         dto2.setAssigneeId(null);
+        dto2.getTaskLabelIds().add(1L);
+        dto2.getTaskLabelIds().add(2L);
 
         var response2 = mockMvc.perform(post("/api/tasks")
                         .with(token)
@@ -164,6 +166,9 @@ public class TasksControllerTest {
                         .content(om.writeValueAsString(dto2)))
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString();
+        assertThatJson(response2).and(
+                v -> v.node("taskLabelIds").isEqualTo("[1,2]")
+        );
     }
 
     @Test

@@ -53,6 +53,7 @@ public abstract class TaskMapper {
     @Mapping(target = "title", source = "name")
     @Mapping(target = "content", source = "description")
     @Mapping(target = "status", source = "taskStatus.slug")
+    @Mapping(target = "taskLabelIds", source = "labels", qualifiedByName = "labelsToLabelsIds")
     public abstract TaskDTO map(Task model);
 
     @Mapping(source = "assigneeId", target = "assignee", qualifiedByName = "assigneeIdToUser")
@@ -77,5 +78,15 @@ public abstract class TaskMapper {
     public User assigneeIdToUser(Long id) {
         return id == null ? null : userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id = " + id + " not found"));
+    }
+
+    @Named("labelsToLabelsIds")
+    public Set<Long> labelsToLabelsIds(Set<Label> labels) {
+        if (labels == null) {
+            return null;
+        }
+        var result = new HashSet<Long>();
+        labels.forEach(l -> result.add(l.getId()));
+        return result;
     }
 }
