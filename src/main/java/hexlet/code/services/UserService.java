@@ -3,8 +3,6 @@ package hexlet.code.services;
 import hexlet.code.dto.users.UserCreateDTO;
 import hexlet.code.dto.users.UserDTO;
 import hexlet.code.dto.users.UserUpdateDTO;
-import hexlet.code.exceptions.ResourceAlreadyExistsException;
-import hexlet.code.exceptions.ResourceNotFoundException;
 import hexlet.code.mappers.UserMapper;
 import hexlet.code.model.User;
 import hexlet.code.repositories.UserRepository;
@@ -37,22 +35,18 @@ public class UserService {
 
     public UserDTO create(UserCreateDTO userCreateDTO) {
         var user = mapper.map(userCreateDTO);
-        if (!repository.findAll().contains(user)) {
-            repository.save(user);
-        } else {
-            throw new ResourceAlreadyExistsException("Resource already exists");
-        }
+        repository.save(user);
         return mapper.map(user);
     }
 
     public UserDTO findById(Long id) {
         return mapper.map(repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found")));
+                .orElseThrow());
     }
 
     public UserDTO update(UserUpdateDTO userUpdateDTO, Long id) {
         var user = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
+                .orElseThrow();
 
         mapper.update(userUpdateDTO, user);
         repository.save(user);

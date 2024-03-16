@@ -3,7 +3,6 @@ package hexlet.code.mappers;
 import hexlet.code.dto.tasks.TaskCreateDTO;
 import hexlet.code.dto.tasks.TaskDTO;
 import hexlet.code.dto.tasks.TaskUpdateDTO;
-import hexlet.code.exceptions.ResourceNotFoundException;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 
@@ -66,7 +65,7 @@ public abstract class TaskMapper {
     @Named("slugToTaskStatus")
     public TaskStatus slugToTaskStatus(String slug) {
         return taskStatusRepository.findBySlug(slug)
-                .orElseThrow(() -> new ResourceNotFoundException("Task Status with slug = " + slug + " not found"));
+                .orElseThrow();
     }
 
     @Named("labelIdsToLabels")
@@ -77,7 +76,7 @@ public abstract class TaskMapper {
     @Named("assigneeIdToUser")
     public User assigneeIdToUser(Long id) {
         return id == null ? null : userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User with id = " + id + " not found"));
+                .orElseThrow();
     }
 
     @Named("labelsToLabelsIds")

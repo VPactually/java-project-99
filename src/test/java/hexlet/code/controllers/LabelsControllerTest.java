@@ -2,6 +2,7 @@ package hexlet.code.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.dto.labels.LabelCreateDTO;
+import hexlet.code.dto.labels.LabelUpdateDTO;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
@@ -14,21 +15,19 @@ import hexlet.code.util.ModelGenerator;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.HashMap;
+import org.springframework.transaction.annotation.Transactional;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor;
-import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -37,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
+@Transactional
 public class LabelsControllerTest {
 
     @Autowired
@@ -72,7 +71,6 @@ public class LabelsControllerTest {
 
     private User testUser;
 
-
     @BeforeEach
     public void setUp() {
         testLabel = Instancio.of(modelGenerator.getLabelModel()).create();
@@ -87,8 +85,22 @@ public class LabelsControllerTest {
         testTask.setTaskStatus(testTaskStatus);
         testTask.setAssignee(testUser);
         taskRepository.save(testTask);
+        labelRepository.save(testLabel);
     }
 
+    @Test
+    public void showTest() throws Exception {
+        var response = mockMvc.perform(get("/api/labels/" + testLabel.getId())
+                        .with(token))
+                .andExpect(status().isOk())
+                .andReturn().getResponse();
+        assertThatJson(response.getContentAsString()).and(
+                v -> v.node("name").isEqualTo(testLabel.getName())
+        );
+
+        mockMvc.perform(get("/api/labels/" + testLabel.getId()))
+                .andExpect(status().isUnauthorized());
+    }
 
     @Test
     public void indexTest() throws Exception {
@@ -97,8 +109,6 @@ public class LabelsControllerTest {
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
         assertThatJson(response).isArray();
-
-        labelRepository.save(testLabel);
 
         var response2 = mockMvc.perform(get("/api/labels")
                         .with(token))
@@ -109,24 +119,6 @@ public class LabelsControllerTest {
                 .contains(testLabel.getName());
 
         mockMvc.perform(get("/api/labels"))
-                .andExpect(status().isUnauthorized());
-    }
-
-
-    @Test
-    public void showTest() throws Exception {
-
-        labelRepository.save(testLabel);
-
-        var response = mockMvc.perform(get("/api/labels/" + testLabel.getId())
-                        .with(token))
-                .andExpect(status().isOk())
-                .andReturn().getResponse();
-        assertThatJson(response.getContentAsString()).and(
-                v -> v.node("name").isEqualTo(testLabel.getName())
-        );
-
-        mockMvc.perform(get("/api/labels/" + testLabel.getId()))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -151,14 +143,10 @@ public class LabelsControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 
-
     @Test
     public void updateTest() throws Exception {
-        labelRepository.save(testLabel);
-
-        var dto = new HashMap<>();
-        dto.put("name", "New Name");
-
+        var dto = new LabelUpdateDTO();
+        dto.setName(JsonNullable.of("new Label"));
 
         var response = mockMvc.perform(put("/api/labels/" + testLabel.getId())
                         .with(token)
@@ -167,7 +155,7 @@ public class LabelsControllerTest {
                 .andReturn().getResponse().getContentAsString();
 
         assertThatJson(response).and(
-                v -> v.node("name").isEqualTo("New Name")
+                v -> v.node("name").isEqualTo("new Label")
         );
 
         mockMvc.perform(put("/api/labels/" + testTask.getId())
@@ -176,14 +164,10 @@ public class LabelsControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 
-
     @Test
     public void deleteTest() throws Exception {
-        labelRepository.save(testLabel);
-
         mockMvc.perform(delete("/api/labels/" + testLabel.getId()))
                 .andExpect(status().isUnauthorized());
-
 
         mockMvc.perform(delete("/api/labels/" + testLabel.getId())
                         .with(token))

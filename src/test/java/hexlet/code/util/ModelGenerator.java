@@ -11,8 +11,9 @@ import net.datafaker.Faker;
 import org.instancio.Instancio;
 import org.instancio.Model;
 import org.instancio.Select;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Locale;
 
 @Getter
 @Component
@@ -21,12 +22,11 @@ public class ModelGenerator {
     private Model<TaskStatus> taskStatusModel;
     private Model<Task> taskModel;
     private Model<Label> labelModel;
-
-    @Autowired
     private Faker faker;
 
     @PostConstruct
     private void init() {
+        faker = new Faker(new Locale("en", "US"));
         userModel = Instancio.of(User.class)
                 .ignore(Select.field(User::getId))
                 .supply(Select.field(User::getFirstName), () -> faker.name().firstName())
