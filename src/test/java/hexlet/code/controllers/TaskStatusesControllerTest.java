@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 
-import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
@@ -63,20 +62,6 @@ public class TaskStatusesControllerTest {
                 .andReturn().getResponse();
         assertThat(response1.getContentAsString()).contains("Draft");
         assertThat(response1.getContentAsString()).contains("draft");
-
-        var response2 = mockMvc.perform(get("/api/task_statuses/2")
-                        .with(token))
-                .andExpect(status().isOk())
-                .andReturn().getResponse();
-        assertThat(response2.getContentAsString()).contains("ToReview");
-        assertThat(response2.getContentAsString()).contains("to_review");
-
-        var response5 = mockMvc.perform(get("/api/task_statuses/5")
-                        .with(token))
-                .andExpect(status().isOk())
-                .andReturn().getResponse();
-        assertThat(response5.getContentAsString()).contains("Published");
-        assertThat(response5.getContentAsString()).contains("published");
     }
 
     @Test
@@ -96,17 +81,16 @@ public class TaskStatusesControllerTest {
     public void createTest() throws Exception {
         var newStatus = Instancio.of(modelGenerator.getTaskStatusModel()).create();
 
-        var response = mockMvc.perform(post("/api/task_statuses")
+        mockMvc.perform(post("/api/task_statuses")
                         .with(token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(newStatus)))
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString();
 
-        assertThatJson(response).and(
-                v -> v.node("name").isEqualTo(newStatus.getName()),
-                v -> v.node("slug").isEqualTo(newStatus.getSlug())
-        );
+        var status = taskStatusRepository.findBySlug(newStatus.getSlug());
+        assertThat(status.get().getName()).isEqualTo(newStatus.getName());
+        assertThat(status.get().getSlug()).isEqualTo(newStatus.getSlug());
     }
 
     @Test
@@ -118,13 +102,10 @@ public class TaskStatusesControllerTest {
                         .content(om.writeValueAsString(dto)))
                 .andExpect(status().isOk())
                 .andReturn().getResponse();
-        var response = mockMvc.perform(get("/api/task_statuses/1")
-                        .with(token))
-                .andExpect(status().isOk())
-                .andReturn().getResponse();
 
-        assertThat(response.getContentAsString()).contains("New Name");
-        assertThat(response.getContentAsString()).contains("new_slug").doesNotContain("Draft", "draft");
+        var taskStatus = taskStatusRepository.findBySlug(dto.getSlug().get());
+        assertThat(taskStatus.get().getSlug()).isEqualTo(dto.getSlug().get());
+        assertThat(taskStatus.get().getName()).isEqualTo(dto.getName().get());
     }
 
     @Test

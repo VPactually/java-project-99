@@ -15,7 +15,6 @@ import hexlet.code.util.ModelGenerator;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -110,12 +109,7 @@ public class LabelsControllerTest {
                 .andReturn().getResponse().getContentAsString();
         assertThatJson(response).isArray();
 
-        var response2 = mockMvc.perform(get("/api/labels")
-                        .with(token))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-
-        assertThat(response2)
+        assertThat(response)
                 .contains(testLabel.getName());
 
         mockMvc.perform(get("/api/labels"))
@@ -127,15 +121,15 @@ public class LabelsControllerTest {
         var dto = new LabelCreateDTO();
         dto.setName("new Label");
 
-        var response = mockMvc.perform(post("/api/labels")
+        mockMvc.perform(post("/api/labels")
                         .with(token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(dto)))
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString();
-        assertThatJson(response).and(
-                v -> v.node("name").isEqualTo("new Label")
-        );
+
+        var label = labelRepository.findByName(dto.getName());
+        assertThat(label.get().getName()).isEqualTo(dto.getName());
 
         mockMvc.perform(post("/api/labels")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -145,18 +139,15 @@ public class LabelsControllerTest {
 
     @Test
     public void updateTest() throws Exception {
-        var dto = new LabelUpdateDTO();
-        dto.setName(JsonNullable.of("new Label"));
+        var dto = new LabelUpdateDTO("new Label1");
 
-        var response = mockMvc.perform(put("/api/labels/" + testLabel.getId())
+        mockMvc.perform(put("/api/labels/" + testLabel.getId())
                         .with(token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(dto)))
-                .andReturn().getResponse().getContentAsString();
+                .andExpect(status().isOk());
 
-        assertThatJson(response).and(
-                v -> v.node("name").isEqualTo("new Label")
-        );
+        assertThat(labelRepository.findByName(dto.getName().get())).isPresent();
 
         mockMvc.perform(put("/api/labels/" + testTask.getId())
                         .contentType(MediaType.APPLICATION_JSON)

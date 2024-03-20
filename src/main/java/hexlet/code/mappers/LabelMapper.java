@@ -10,6 +10,8 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.List;
+
 
 @Mapper(
         uses = {JsonNullableMapper.class, ReferenceMapper.class},
@@ -19,6 +21,7 @@ import org.mapstruct.ReportingPolicy;
 )
 public abstract class LabelMapper {
     public abstract Label map(LabelCreateDTO dto);
+    public abstract List<LabelDTO> map(List<Label> list);
 
     public abstract LabelDTO map(Label model);
 

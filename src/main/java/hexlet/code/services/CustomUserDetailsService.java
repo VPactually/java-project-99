@@ -2,6 +2,7 @@ package hexlet.code.services;
 
 
 import hexlet.code.repositories.UserRepository;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,31 +27,31 @@ public class CustomUserDetailsService implements UserDetailsManager {
     @Override
     public void createUser(UserDetails userData) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createUser'");
+        throw new NotImplementedException("Unimplemented method 'createUser'");
     }
 
     @Override
     public void updateUser(UserDetails user) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateUser'");
+        throw new NotImplementedException("Unimplemented method 'updateUser'");
     }
 
     @Override
     public void deleteUser(String username) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteUser'");
+        throw new NotImplementedException("Unimplemented method 'deleteUser'");
     }
 
     @Override
     public void changePassword(String oldPassword, String newPassword) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'changePassword'");
+        throw new NotImplementedException("Unimplemented method 'changePassword'");
     }
 
     @Override
     public boolean userExists(String username) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'userExists'");
+        throw new NotImplementedException("Unimplemented method 'userExists'");
     }
 }
 // END

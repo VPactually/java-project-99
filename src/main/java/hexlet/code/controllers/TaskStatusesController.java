@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,7 +34,7 @@ public class TaskStatusesController {
     private UserUtils userUtils;
 
     @GetMapping
-    public ResponseEntity<List<TaskStatusDTO>> index(
+    public ResponseEntity<List<TaskStatusDTO>> getAll(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "1000") Integer pageSize) {
         var pageable = PageRequest.of(page - 1, pageSize);
@@ -46,12 +45,11 @@ public class TaskStatusesController {
     }
 
     @GetMapping("/{id}")
-    public TaskStatusDTO show(@PathVariable Long id) {
+    public TaskStatusDTO getById(@PathVariable Long id) {
         return taskStatusService.findById(id);
     }
 
     @PostMapping
-    @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.CREATED)
     public TaskStatusDTO create(@Valid @RequestBody TaskStatusCreateDTO taskStatusCreateDTO) {
         return taskStatusService.create(taskStatusCreateDTO);
@@ -59,8 +57,7 @@ public class TaskStatusesController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isAuthenticated()")
-    public TaskStatusDTO update(
+    public TaskStatusDTO updateById(
             @Valid @RequestBody TaskStatusUpdateDTO taskStatusUpdateDTO,
             @PathVariable Long id
     ) {
@@ -69,8 +66,7 @@ public class TaskStatusesController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("isAuthenticated()")
-    public void destroy(@PathVariable Long id) {
+    public void destroyById(@PathVariable Long id) {
         taskStatusService.delete(id);
     }
 }

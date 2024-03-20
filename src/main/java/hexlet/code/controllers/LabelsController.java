@@ -4,6 +4,7 @@ import hexlet.code.dto.labels.LabelCreateDTO;
 import hexlet.code.dto.labels.LabelDTO;
 import hexlet.code.dto.labels.LabelUpdateDTO;
 import hexlet.code.services.LabelService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class LabelsController {
     private LabelService labelService;
 
     @GetMapping
-    private ResponseEntity<List<LabelDTO>> index() {
+    private ResponseEntity<List<LabelDTO>> getAll() {
         var result = labelService.getAll();
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(result.size()))
@@ -35,7 +36,7 @@ public class LabelsController {
     }
 
     @GetMapping("/{id}")
-    private LabelDTO show(@PathVariable Long id) {
+    private LabelDTO getById(@PathVariable Long id) {
         return labelService.findById(id);
     }
 
@@ -46,13 +47,13 @@ public class LabelsController {
     }
 
     @PutMapping("/{id}")
-    private LabelDTO update(@PathVariable Long id, @RequestBody LabelUpdateDTO labelUpdateDTO) {
+    private LabelDTO updateById(@PathVariable Long id, @Valid @RequestBody LabelUpdateDTO labelUpdateDTO) {
         return labelService.update(labelUpdateDTO, id);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    private void destroy(@PathVariable Long id) {
+    private void destroyById(@PathVariable Long id) {
         labelService.delete(id);
     }
 }

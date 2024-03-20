@@ -20,7 +20,7 @@ public class LabelService {
     private LabelMapper mapper;
 
     public List<LabelDTO> getAll() {
-        return repository.findAll().stream().map(mapper::map).toList();
+        return mapper.map(repository.findAll());
     }
 
     public LabelDTO create(LabelCreateDTO labelCreateDTO) {

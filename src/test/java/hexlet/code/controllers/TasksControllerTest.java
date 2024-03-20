@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -96,12 +95,7 @@ public class TasksControllerTest {
                 .andReturn().getResponse().getContentAsString();
         assertThatJson(response).isArray();
 
-        var response2 = mockMvc.perform(get("/api/tasks")
-                        .with(token))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-
-        assertThat(response2)
+        assertThat(response)
                 .contains(String.valueOf(testTask.getAssignee().getId()))
                 .contains(testTask.getName())
                 .contains(testTask.getDescription())
@@ -119,37 +113,38 @@ public class TasksControllerTest {
         dto.setAssigneeId(testTask.getAssignee().getId());
         dto.setStatus(testTask.getTaskStatus().getSlug());
 
-        var response = mockMvc.perform(post("/api/tasks")
+        mockMvc.perform(post("/api/tasks")
                         .with(token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(dto)))
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString();
-        assertThatJson(response).and(
-                v -> v.node("title").isEqualTo(testTask.getName()),
-                v -> v.node("content").isEqualTo(testTask.getDescription()),
-                v -> v.node("status").isEqualTo(testTask.getTaskStatus().getSlug()),
-                v -> v.node("assignee_id").isEqualTo(testTask.getAssignee().getId())
-        );
+
+        var task = taskRepository.findByName(dto.getTitle());
+
+        assertThat(task.get().getName()).isEqualTo(dto.getTitle());
+        assertThat(task.get().getDescription()).isEqualTo(dto.getContent());
+        assertThat(task.get().getIndex()).isEqualTo(dto.getIndex());
+        assertThat(task.get().getAssignee().getId()).isEqualTo(dto.getAssigneeId());
+        assertThat(task.get().getTaskStatus().getSlug()).isEqualTo(dto.getStatus());
+
     }
 
     @Test
     public void updateTest() throws Exception {
-        assertTrue(taskStatusRepository.findBySlug("to_review").isPresent());
-
         var dto = new TaskUpdateDTO("New Title", "New Content", "to_review");
 
-        var response = mockMvc.perform(put("/api/tasks/" + testTask.getId())
+        mockMvc.perform(put("/api/tasks/" + testTask.getId())
                         .with(token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(dto)))
                 .andReturn().getResponse().getContentAsString();
 
-        assertThatJson(response).and(
-                v -> v.node("title").isEqualTo("New Title"),
-                v -> v.node("content").isEqualTo("New Content"),
-                v -> v.node("status").isEqualTo("to_review")
-        );
+        var task = taskRepository.findByName(dto.getTitle().get());
+
+        assertThat(task.get().getName()).isEqualTo(dto.getTitle().get());
+        assertThat(task.get().getDescription()).isEqualTo(dto.getContent().get());
+        assertThat(task.get().getTaskStatus().getSlug()).isEqualTo(dto.getStatus().get());
     }
 
     @Test

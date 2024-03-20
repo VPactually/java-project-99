@@ -8,7 +8,7 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/647aba9f34b860210bc6/test_coverage)](https://codeclimate.com/github/VPactually/java-project-99/test_coverage)
 
 
-### Application Web Site
+### Application Website
 https://java-project-99-q82q.onrender.com/
 
 ### Task Manager 

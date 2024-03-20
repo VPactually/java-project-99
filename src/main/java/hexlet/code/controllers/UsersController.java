@@ -2,11 +2,9 @@ package hexlet.code.controllers;
 
 import hexlet.code.dto.users.UserCreateDTO;
 import hexlet.code.dto.users.UserDTO;
-import hexlet.code.dto.users.UserParamsDTO;
 import hexlet.code.dto.users.UserUpdateDTO;
 import hexlet.code.mappers.UserMapper;
 import hexlet.code.services.UserService;
-import hexlet.code.specifications.UserSpecification;
 import hexlet.code.utils.UserUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,27 +40,22 @@ public class UsersController {
     @Autowired
     private UserUtils userUtils;
 
-    @Autowired
-    private UserSpecification specBuilder;
-
     @GetMapping
-    public ResponseEntity<List<UserDTO>> index(
-            UserParamsDTO userParamsDTO,
+    public ResponseEntity<List<UserDTO>> getAll(
             @RequestParam(name = "_start", defaultValue = "0") int start,
             @RequestParam(name = "_end", defaultValue = "1000") int end,
             @RequestParam(name = "_sort", defaultValue = "id") String sort,
             @RequestParam(name = "_order", defaultValue = "ASC") String order) {
-        var spec = specBuilder.build(userParamsDTO);
         var direction = "ASC".equals(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
         var pageable = PageRequest.of(start, end, Sort.by(direction, sort));
-        var result = userService.getAll(spec, pageable).map(userMapper::map);
+        var result = userService.getAll(pageable).map(userMapper::map);
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(result.getTotalElements()))
                 .body(result.toList());
     }
 
     @GetMapping("/{id}")
-    public UserDTO show(@PathVariable Long id) {
+    public UserDTO getById(@PathVariable Long id) {
         return userService.findById(id);
     }
 
@@ -75,14 +68,14 @@ public class UsersController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("@userUtils.checkUserPermission(#id)")
-    public UserDTO update(@Valid @RequestBody UserUpdateDTO userUpdateDTO, @PathVariable Long id) {
+    public UserDTO updateById(@Valid @RequestBody UserUpdateDTO userUpdateDTO, @PathVariable Long id) {
         return userService.update(userUpdateDTO, id);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("@userUtils.checkUserPermission(#id)")
-    public void destroy(@PathVariable Long id) {
+    public void destroyById(@PathVariable Long id) {
         userService.delete(id);
     }
 

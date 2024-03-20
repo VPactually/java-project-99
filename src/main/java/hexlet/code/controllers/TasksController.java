@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,7 +36,7 @@ public class TasksController {
     private TaskSpecification specification;
 
     @GetMapping
-    public ResponseEntity<List<TaskDTO>> index(
+    public ResponseEntity<List<TaskDTO>> getAll(
             TaskParamsDTO taskParamsDTO,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "1000") Integer pageSize) {
@@ -50,12 +49,11 @@ public class TasksController {
     }
 
     @GetMapping("/{id}")
-    public TaskDTO show(@PathVariable Long id) {
+    public TaskDTO getById(@PathVariable Long id) {
         return taskService.findById(id);
     }
 
     @PostMapping
-    @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.CREATED)
     public TaskDTO create(@Valid @RequestBody TaskCreateDTO taskCreateDTO) {
         return taskService.create(taskCreateDTO);
@@ -63,8 +61,7 @@ public class TasksController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isAuthenticated()")
-    public TaskDTO update(
+    public TaskDTO updateById(
             @Valid @RequestBody TaskUpdateDTO taskStatusUpdateDTO,
             @PathVariable Long id
     ) {
@@ -73,8 +70,7 @@ public class TasksController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("isAuthenticated()")
-    public void destroy(@PathVariable Long id) {
+    public void destroyById(@PathVariable Long id) {
         taskService.delete(id);
     }
 }
