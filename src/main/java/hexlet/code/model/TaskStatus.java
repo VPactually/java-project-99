@@ -11,6 +11,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.CascadeType;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -24,6 +25,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Table(name = "statuses")
 @EntityListeners(AuditingEntityListener.class)
 @Data
+@NoArgsConstructor
 public class TaskStatus implements BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
