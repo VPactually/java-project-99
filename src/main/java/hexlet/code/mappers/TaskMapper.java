@@ -8,9 +8,7 @@ import hexlet.code.model.Task;
 
 import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
-import hexlet.code.repositories.LabelRepository;
 import hexlet.code.repositories.TaskStatusRepository;
-import hexlet.code.repositories.UserRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mapping;
@@ -20,8 +18,8 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Mapper(
@@ -33,13 +31,7 @@ import java.util.Set;
 public abstract class TaskMapper {
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private TaskStatusRepository taskStatusRepository;
-
-    @Autowired
-    private LabelRepository labelRepository;
 
     @Mapping(source = "assigneeId", target = "assignee", qualifiedByName = "assigneeIdToUser")
     @Mapping(source = "title", target = "name")
@@ -64,28 +56,21 @@ public abstract class TaskMapper {
 
     @Named("slugToTaskStatus")
     public TaskStatus slugToTaskStatus(String slug) {
-        return taskStatusRepository.findBySlug(slug)
-                .orElseThrow();
+        return taskStatusRepository.findBySlug(slug).orElseThrow();
     }
 
     @Named("labelIdsToLabels")
     public Set<Label> labelIdToLabel(Set<Long> labelsIds) {
-        return labelsIds == null ? new HashSet<>() : new HashSet<>(labelRepository.findAllById(labelsIds));
+        return labelsIds == null ? null : labelsIds.stream().map(Label::new).collect(Collectors.toSet());
     }
 
     @Named("assigneeIdToUser")
     public User assigneeIdToUser(Long id) {
-        return id == null ? null : userRepository.findById(id)
-                .orElseThrow();
+        return id == null ? null : new User(id);
     }
 
     @Named("labelsToLabelsIds")
     public Set<Long> labelsToLabelsIds(Set<Label> labels) {
-        if (labels == null) {
-            return null;
-        }
-        var result = new HashSet<Long>();
-        labels.forEach(l -> result.add(l.getId()));
-        return result;
+        return labels == null ? null : labels.stream().map(Label::getId).collect(Collectors.toSet());
     }
 }

@@ -10,9 +10,8 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.CascadeType;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -23,8 +22,7 @@ import java.util.Set;
 @Entity
 @Table(name = "labels")
 @EntityListeners(AuditingEntityListener.class)
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 public class Label implements BaseEntity {
 
@@ -41,4 +39,7 @@ public class Label implements BaseEntity {
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE, mappedBy = "labels")
     private Set<Task> tasks = new HashSet<>();
 
+    public Label(Long id) {
+        this.id = id;
+    }
 }

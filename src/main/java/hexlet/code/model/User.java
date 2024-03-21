@@ -13,9 +13,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.ToString;
+import lombok.NoArgsConstructor;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -33,9 +33,8 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name = "users")
 @EntityListeners(AuditingEntityListener.class)
-@Getter
-@Setter
-@ToString
+@Data
+@NoArgsConstructor
 public class User implements BaseEntity, UserDetails {
 
     @Id
@@ -67,6 +66,10 @@ public class User implements BaseEntity, UserDetails {
     @OneToMany(fetch = FetchType.EAGER)
     private List<Task> tasks = new ArrayList<>();
 
+    public User(long id) {
+        this.id = id;
+    }
+
     @Override
     public String getPassword() {
         return passwordDigest;
@@ -84,7 +87,7 @@ public class User implements BaseEntity, UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return new ArrayList<GrantedAuthority>();
+        return new ArrayList<>();
     }
 
     @Override
