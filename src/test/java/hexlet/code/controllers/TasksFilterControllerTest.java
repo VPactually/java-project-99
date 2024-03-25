@@ -53,7 +53,6 @@ public class TasksFilterControllerTest {
     private TaskStatus review;
     private User admin;
     private User user;
-
     private Task task1;
     private Task task2;
     private Task task3;
@@ -62,12 +61,12 @@ public class TasksFilterControllerTest {
     @BeforeEach
     public void setUp() {
         token = jwt().jwt(builder -> builder.subject("hexlet@example.com"));
-        bug = labelRepository.findByName("bug").get();
-        feature = labelRepository.findByName("feature").get();
-        draft = taskStatusRepository.findBySlug("draft").get();
-        review = taskStatusRepository.findBySlug("to_review").get();
-        admin = userRepository.findByEmail("hexlet@example.com").get();
-        user = userRepository.findByEmail("user@gmail.com").get();
+        bug = labelRepository.findByName("bug").orElseThrow();
+        feature = labelRepository.findByName("feature").orElseThrow();
+        draft = taskStatusRepository.findBySlug("draft").orElseThrow();
+        review = taskStatusRepository.findBySlug("to_review").orElseThrow();
+        admin = userRepository.findByEmail("hexlet@example.com").orElseThrow();
+        user = userRepository.findByEmail("user@gmail.com").orElseThrow();
 
         task1 = new Task();
         task2 = new Task();

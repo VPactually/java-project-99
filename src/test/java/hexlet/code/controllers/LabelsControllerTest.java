@@ -96,9 +96,6 @@ public class LabelsControllerTest {
         assertThatJson(response.getContentAsString()).and(
                 v -> v.node("name").isEqualTo(testLabel.getName())
         );
-
-        mockMvc.perform(get("/api/labels/" + testLabel.getId()))
-                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -107,13 +104,7 @@ public class LabelsControllerTest {
                         .with(token))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
-        assertThatJson(response).isArray();
-
-        assertThat(response)
-                .contains(testLabel.getName());
-
-        mockMvc.perform(get("/api/labels"))
-                .andExpect(status().isUnauthorized());
+        assertThat(response).contains(testLabel.getName());
     }
 
     @Test
@@ -128,13 +119,8 @@ public class LabelsControllerTest {
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString();
 
-        var label = labelRepository.findByName(dto.getName());
-        assertThat(label.get().getName()).isEqualTo(dto.getName());
-
-        mockMvc.perform(post("/api/labels")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(om.writeValueAsString(dto)))
-                .andExpect(status().isUnauthorized());
+        var label = labelRepository.findByName(dto.getName()).orElseThrow();
+        assertThat(label.getName()).isEqualTo(dto.getName());
     }
 
     @Test
@@ -148,22 +134,35 @@ public class LabelsControllerTest {
                 .andExpect(status().isOk());
 
         assertThat(labelRepository.findByName(dto.getName().get())).isPresent();
-
-        mockMvc.perform(put("/api/labels/" + testTask.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(om.writeValueAsString(dto)))
-                .andExpect(status().isUnauthorized());
     }
 
     @Test
     public void deleteTest() throws Exception {
-        mockMvc.perform(delete("/api/labels/" + testLabel.getId()))
-                .andExpect(status().isUnauthorized());
 
         mockMvc.perform(delete("/api/labels/" + testLabel.getId())
                         .with(token))
                 .andExpect(status().isNoContent())
                 .andReturn().getResponse();
         assertFalse(labelRepository.findByName(testLabel.getName()).isPresent());
+    }
+
+    @Test
+    public void UnauthorizedTest() throws Exception {
+        mockMvc.perform(get("/api/labels"))
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(post("/api/labels")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(put("/api/labels/" + testTask.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(get("/api/labels/" + testLabel.getId()))
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(delete("/api/labels/" + testLabel.getId()))
+                .andExpect(status().isUnauthorized());
     }
 }

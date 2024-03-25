@@ -64,7 +64,6 @@ public class UsersControllerTest {
         userRepository.save(testUser);
         userRepository.save(anotherUser);
     }
-
     @Test
     public void testShow() throws Exception {
 
@@ -106,7 +105,7 @@ public class UsersControllerTest {
         mockMvc.perform(request)
                 .andExpect(status().isCreated());
 
-        var user = userRepository.findByEmail(newUser.getEmail()).get();
+        var user = userRepository.findByEmail(newUser.getEmail()).orElseThrow();
 
         assertThat(user).isNotNull();
         assertThat(user.getFirstName()).isEqualTo(newUser.getFirstName());
@@ -129,12 +128,21 @@ public class UsersControllerTest {
         mockMvc.perform(updateReq)
                 .andExpect(status().isOk());
 
-        var user = userRepository.findByEmail(testUser.getEmail()).get();
+        var user = userRepository.findByEmail(testUser.getEmail()).orElseThrow();
 
         assertThat(user).isNotNull();
         assertThat(user.getFirstName()).isEqualTo("New First Name");
         assertThat(user.getLastName()).isEqualTo("New Last Name");
         assertThat(user.getEmail()).isEqualTo(testUser.getEmail());
+    }
+
+    @Test
+    public void testDelete() throws Exception {
+        var delReq = delete("/api/users/" + testUser.getId())
+                .with(jwt().jwt(builder -> builder.subject(testUser.getEmail())));
+
+        mockMvc.perform(delReq).andExpect(status().isNoContent());
+        assertFalse(userRepository.findByEmail(testUser.getEmail()).isPresent());
     }
 
     @Test
@@ -148,16 +156,6 @@ public class UsersControllerTest {
 
         mockMvc.perform(request)
                 .andExpect(status().isForbidden());
-    }
-
-    @Test
-    public void testDelete() throws Exception {
-        var delReq = delete("/api/users/" + testUser.getId())
-                .with(jwt().jwt(builder -> builder.subject(testUser.getEmail())));
-
-        mockMvc.perform(delReq)
-                .andExpect(status().isNoContent());
-        assertFalse(userRepository.findByEmail(testUser.getEmail()).isPresent());
     }
 
     @Test

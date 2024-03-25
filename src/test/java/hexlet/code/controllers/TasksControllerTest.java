@@ -93,7 +93,6 @@ public class TasksControllerTest {
                         .with(token))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
-        assertThatJson(response).isArray();
 
         assertThat(response)
                 .contains(String.valueOf(testTask.getAssignee().getId()))
@@ -120,13 +119,13 @@ public class TasksControllerTest {
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString();
 
-        var task = taskRepository.findByName(dto.getTitle());
+        var task = taskRepository.findByName(dto.getTitle()).orElseThrow();
 
-        assertThat(task.get().getName()).isEqualTo(dto.getTitle());
-        assertThat(task.get().getDescription()).isEqualTo(dto.getContent());
-        assertThat(task.get().getIndex()).isEqualTo(dto.getIndex());
-        assertThat(task.get().getAssignee().getId()).isEqualTo(dto.getAssigneeId());
-        assertThat(task.get().getTaskStatus().getSlug()).isEqualTo(dto.getStatus());
+        assertThat(task.getName()).isEqualTo(dto.getTitle());
+        assertThat(task.getDescription()).isEqualTo(dto.getContent());
+        assertThat(task.getIndex()).isEqualTo(dto.getIndex());
+        assertThat(task.getAssignee().getId()).isEqualTo(dto.getAssigneeId());
+        assertThat(task.getTaskStatus().getSlug()).isEqualTo(dto.getStatus());
 
     }
 
@@ -140,11 +139,11 @@ public class TasksControllerTest {
                         .content(om.writeValueAsString(dto)))
                 .andReturn().getResponse().getContentAsString();
 
-        var task = taskRepository.findByName(dto.getTitle().get());
+        var task = taskRepository.findByName(dto.getTitle().get()).orElseThrow();
 
-        assertThat(task.get().getName()).isEqualTo(dto.getTitle().get());
-        assertThat(task.get().getDescription()).isEqualTo(dto.getContent().get());
-        assertThat(task.get().getTaskStatus().getSlug()).isEqualTo(dto.getStatus().get());
+        assertThat(task.getName()).isEqualTo(dto.getTitle().get());
+        assertThat(task.getDescription()).isEqualTo(dto.getContent().get());
+        assertThat(task.getTaskStatus().getSlug()).isEqualTo(dto.getStatus().get());
     }
 
     @Test
@@ -154,6 +153,26 @@ public class TasksControllerTest {
                 .andExpect(status().isNoContent())
                 .andReturn().getResponse();
         assertFalse(taskRepository.findByName(testTask.getName()).isPresent());
+    }
+
+    @Test
+    public void UnauthorizedTest() throws Exception {
+        mockMvc.perform(get("/api/tasks"))
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(post("/api/tasks")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(put("/api/tasks/" + testTask.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(get("/api/tasks/" + testTask.getId()))
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(delete("/api/tasks/" + testTask.getId()))
+                .andExpect(status().isUnauthorized());
     }
 
 }

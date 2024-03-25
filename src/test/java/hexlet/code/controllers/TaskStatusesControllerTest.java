@@ -15,8 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
@@ -88,9 +86,9 @@ public class TaskStatusesControllerTest {
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString();
 
-        var status = taskStatusRepository.findBySlug(newStatus.getSlug());
-        assertThat(status.get().getName()).isEqualTo(newStatus.getName());
-        assertThat(status.get().getSlug()).isEqualTo(newStatus.getSlug());
+        var status = taskStatusRepository.findBySlug(newStatus.getSlug()).orElseThrow();
+        assertThat(status.getName()).isEqualTo(newStatus.getName());
+        assertThat(status.getSlug()).isEqualTo(newStatus.getSlug());
     }
 
     @Test
@@ -103,9 +101,9 @@ public class TaskStatusesControllerTest {
                 .andExpect(status().isOk())
                 .andReturn().getResponse();
 
-        var taskStatus = taskStatusRepository.findBySlug(dto.getSlug().get());
-        assertThat(taskStatus.get().getSlug()).isEqualTo(dto.getSlug().get());
-        assertThat(taskStatus.get().getName()).isEqualTo(dto.getName().get());
+        var taskStatus = taskStatusRepository.findBySlug(dto.getSlug().get()).orElseThrow();
+        assertThat(taskStatus.getSlug()).isEqualTo(dto.getSlug().get());
+        assertThat(taskStatus.getName()).isEqualTo(dto.getName().get());
     }
 
     @Test
@@ -118,13 +116,19 @@ public class TaskStatusesControllerTest {
     }
 
     @Test
-    public void testCreateDeletePutTaskStatusWithoutAuth() throws Exception {
+    public void unauthorizedTest() throws Exception {
         mockMvc.perform(post("/api/task_statuses")
-                        .content(om.writeValueAsString(Map.of("name", "Fake name"))))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
 
         mockMvc.perform(put("/api/task_statuses/" + testTaskStatus.getId())
-                        .content(om.writeValueAsString(Map.of("name", "Fake name"))))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(get("/api/task_statuses"))
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(get("/api/task_statuses/" + testTaskStatus.getId()))
                 .andExpect(status().isUnauthorized());
 
         mockMvc.perform(delete("/api/task_statuses/" + testTaskStatus.getId()))
