@@ -156,7 +156,7 @@ public class TasksControllerTest {
     }
 
     @Test
-    public void UnauthorizedTest() throws Exception {
+    public void unauthorizedTest() throws Exception {
         mockMvc.perform(get("/api/tasks"))
                 .andExpect(status().isUnauthorized());
 

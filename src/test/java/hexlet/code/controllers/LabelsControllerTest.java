@@ -147,7 +147,7 @@ public class LabelsControllerTest {
     }
 
     @Test
-    public void UnauthorizedTest() throws Exception {
+    public void unauthorizedTest() throws Exception {
         mockMvc.perform(get("/api/labels"))
                 .andExpect(status().isUnauthorized());
 
