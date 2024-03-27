@@ -13,7 +13,6 @@ import jakarta.persistence.CascadeType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -26,7 +25,6 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Table(name = "tasks")
 @EntityListeners(AuditingEntityListener.class)
 @Data
-@NoArgsConstructor
 public class Task implements BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)

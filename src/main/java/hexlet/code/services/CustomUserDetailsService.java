@@ -9,8 +9,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
-// BEGIN
-
 @Service
 public class CustomUserDetailsService implements UserDetailsManager {
 
@@ -54,5 +52,3 @@ public class CustomUserDetailsService implements UserDetailsManager {
         throw new NotImplementedException("Unimplemented method 'userExists'");
     }
 }
-// END
-
